@@ -1,0 +1,14 @@
+{
+  "name": "nodejs_dev_utils_web",
+  "version": "1.0.0",
+  "description": "web with developer util tools",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Enrique Sanchez",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
