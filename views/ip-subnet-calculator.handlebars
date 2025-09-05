@@ -1,0 +1,100 @@
+<div class="container mt-4">
+    <h2>{{{title}}}</h2>
+
+    <form id="inputIpForm">
+        <div class="mb-3">
+            <label for="CicdrIpInput" class="form-label">Enter CICDR IP:</label>
+            <input class="form-control" id="CicdrIpInput" type="text" placeholder='Put your IP in CICDR format here'>
+        </div>
+
+        <button type="button" class="btn btn-primary" id="calculateBtn">Calculate</button>
+    </form>
+
+    <table class="table table-striped table-hover table-bordered mt-3" id="results_table" style="display: none;">
+        <thead class="table-primary">
+            <tr>
+                <th colspan="2">Results</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Network Address</td>
+                <td id="network_address_field"></td>
+            </tr>
+            <tr>
+                <td>Broadcast Address</td>
+                <td id="broadcast_address_field"></td>
+            </tr>
+            <tr>
+                <td>First IP of Range</td>
+                <td id="first_range_ip_field"></td>
+            </tr>
+            <tr>
+                <td>Last IP of Range</td>
+                <td id="last_range_ip_field"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div id="loadingOverlay" style="display: none;">
+  <div class="d-flex justify-content-center align-items-center" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.7); z-index: 9999;">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+</div>
+<script>
+    const cicdr_ip_input = document.getElementById("CicdrIpInput")
+    const calculate_btn = document.getElementById("calculateBtn")
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    const results_table = document.getElementById("results_table")
+    const network_address_field = document.getElementById("network_address_field")
+    const broadcast_address_field = document.getElementById("broadcast_address_field")
+    const first_range_ip_field = document.getElementById("first_range_ip_field")
+    const last_range_ip_field = document.getElementById("last_range_ip_field")
+
+    calculate_btn.addEventListener("click", async () => {
+        const cicdr = cicdr_ip_input.value.trim()
+        results_table.style.display = "none"
+        
+        loadingOverlay.style.display = "inline-block"; // show the loading spinner while the request is in progress
+
+        if (!cicdr) {
+            alert("Error. Please enter a valid CICDR IP (e.g. 192.168.1.0/24)")
+            return
+        }
+
+        console.log("Request to server to calculate subnet")
+        try {
+            const response = await fetch("/api/ip-subnet-calculator", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({cicdr})
+            })
+            console.log("Request done")
+            if (!response.ok) {
+                throw new Error("Error calculating IP Range")
+            }
+
+            const data = await response.json()
+
+            console.log(`data: ${JSON.stringify(data)}`)
+
+            network_address_field.innerText = data.network_address
+            broadcast_address_field.innerText = data.broadcast_address
+            first_range_ip_field.innerText = data.first_range_ip
+            last_range_ip_field.innerText = data.last_range_ip
+
+            results_table.style.display = "table"
+        } catch (error) {
+            console.error(`Error calculating Subnet: ${error}`)
+            alert("There was a problem calculating the range")
+        } finally {
+            loadingOverlay.style.display = "none"; // hide again the loading spinner
+        }
+    })
+</script>
