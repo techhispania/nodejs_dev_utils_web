@@ -20,37 +20,9 @@ function calculate_subnet_from_cicdr(cicdr) {
     console.log(`Binary reversed network mask: ${binary_reversed_network_mask}`)
     console.log(`Reversed network mask: ${reversed_network_mask}`)
 
-    // 3. calculate the network address with AND "&" of mask and base ip (The first IP of the range)
-    const base_ip_array = base_ip.split(".")
-    const network_mask_array = network_mask.split(".")
-    
-    let network_address_first_octet = base_ip_array[0]
-    let network_address_second_octet = base_ip_array[1]
-    let network_address_third_octet = base_ip_array[2]
-    let network_address_fourth_octet = base_ip_array[3]
-
-    let network_mask_first_octet = network_mask_array[0]
-    let network_mask_second_octet = network_mask_array[1]
-    let network_mask_third_octet = network_mask_array[2]
-    let network_mask_fourth_octet = network_mask_array[3]
-
-    if (network_mask_first_octet != "255") {
-        network_address_first_octet = parseInt(network_address_first_octet, 10) & parseInt(first_octet, 2)
-    }
-
-    if (network_mask_second_octet != "255") {
-        network_address_second_octet = parseInt(network_address_second_octet, 10) & parseInt(second_octet, 2)
-    }
-
-    if (network_mask_third_octet != "255") {
-        network_address_third_octet = parseInt(network_address_third_octet, 10) & parseInt(third_octet, 2)
-    }
-
-    if (network_mask_fourth_octet != "255") {
-        network_address_fourth_octet = parseInt(network_address_fourth_octet, 10) & parseInt(fourth_octet, 2)
-    }
-    const network_address = `${network_address_first_octet}.${network_address_second_octet}.${network_address_third_octet}.${network_address_fourth_octet}`
-    console.log(`Network address: ${network_address}`)
+    // 3. calculate the network address with AND "&" of base_ip AND network_mask (The first IP of the range)
+    const network_address = calculate_network_address(base_ip, network_mask)
+    console.log(`Network Address: ${network_address}`)
 
     // 5. calculate the broadcast address with OR "|" of mask and base ip (The last IP of the range)
     let broadcast_address_first_octet = base_ip_array[0]
@@ -147,6 +119,33 @@ function calculate_subnet_from_cicdr(cicdr) {
         last_range_ip: last_range_ip
     }
 }
+
+
+// calculate the network address with AND "&" of base_ip AND network_mask (The first IP of the range)
+function calculate_network_address(base_ip, network_mask) {
+    const base_ip_array = base_ip.split(".")
+    const network_mask_array = network_mask.split(".")
+
+    let octet_1 = base_ip_array[0], octet_2 = base_ip_array[1], octet_3 = base_ip_array[2], octet_4 = base_ip_array[3]
+
+    if (network_mask_array[0] != "255") {
+        octet_1 = parseInt(base_ip_array[0], 10) & parseInt(network_mask_array[0], 10)
+    }
+
+    if (network_mask_array[1] != "255") {
+        octet_2 = parseInt(base_ip_array[1], 10) & parseInt(network_mask_array[1], 10)
+    }
+
+    if (network_mask_array[2] != "255") {
+        octet_3 = parseInt(base_ip_array[2], 10) & parseInt(network_mask_array[2], 10)
+    }
+
+    if (network_mask_array[3] != "255") {
+        octet_4 = parseInt(base_ip_array[3], 10) & parseInt(network_mask_array[3], 10)
+    }
+    return `${octet_1}.${octet_2}.${octet_3}.${octet_4}`
+}
+
 
 function calculate_network_mask(sufix) {
     let binary_network_mask = ""
