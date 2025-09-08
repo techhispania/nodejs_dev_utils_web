@@ -30,33 +30,8 @@ function calculate_subnet_from_cicdr(cicdr) {
 
 
     // 6. calculate the first IP of the range, adding +1 to the network address already calculated
-    let first_range_ip_first_octet = network_address_first_octet
-    let first_range_ip_second_octet = network_address_second_octet
-    let first_range_ip_third_octet = network_address_third_octet
-    let first_range_ip_fourth_octet = network_address_fourth_octet
-
-    if (network_address_fourth_octet < 255) {
-        first_range_ip_fourth_octet = first_range_ip_fourth_octet + 1
-    } else {
-        if (network_address_third_octet < 255) {
-            first_range_ip_third_octet = first_range_ip_third_octet + 1
-            first_range_ip_fourth_octet = 0
-        } else {
-            if (network_address_second_octet < 255) {
-                first_range_ip_second_octet = first_range_ip_second_octet + 1
-                first_range_ip_third_octet = 0
-                first_range_ip_fourth_octet = 0
-            } else {
-                if (network_address_first_octet < 255) {
-                    first_range_ip_first_octet = first_range_ip_first_octet + 1
-                    first_range_ip_second_octet = 0
-                    first_range_ip_third_octet = 0
-                    first_range_ip_fourth_octet = 0
-                }
-            }
-        }
-    }
-    const first_range_ip = `${first_range_ip_first_octet}.${first_range_ip_second_octet}.${first_range_ip_third_octet}.${first_range_ip_fourth_octet}`
+    const first_ip = calculate_first_ip(network_address)
+    console.log(`First IP: ${first_ip}`)
 
     // 7. calculate the last IP of the range, substracting -1 to the broadcast IP already calculated
     let last_range_ip_first_octet = broadcast_address_first_octet
@@ -90,7 +65,7 @@ function calculate_subnet_from_cicdr(cicdr) {
     console.log("======== FINAL RESULTS ========")
     console.log(`Network address: ${network_address}`)
     console.log(`Broadcast address: ${broadcast_address}`)
-    console.log(`First Range IP: ${first_range_ip}`)
+    console.log(`First Range IP: ${first_ip}`)
     console.log(`Last range IP: ${last_range_ip}`)
 
     return {
@@ -100,6 +75,37 @@ function calculate_subnet_from_cicdr(cicdr) {
         last_range_ip: last_range_ip
     }
 }
+
+
+function calculate_first_ip(network_address) {
+    const network_address_array = network_address.split(".")
+
+    let octet_1 = network_address_array[0], octet_2 = network_address_array[1], octet_3 = network_address_array[2], octet_4 = network_address_array[3]
+
+    if (parseInt(network_address_array[3], 10) < 255) {
+        octet_4 = parseInt(network_address_array[3], 10) + 1
+        return `${octet_1}.${octet_2}.${octet_3}.${octet_4}`
+    } 
+    if (parseInt(network_address_array[2], 10) < 255) {
+        octet_3 = parseInt(network_address_array[2], 10) + 1
+        octet_4 = 0
+        return `${octet_1}.${octet_2}.${octet_3}.${octet_4}`
+    }
+    if (parseInt(network_address_array[1], 10) < 255) {
+        octet_2 = parseInt(network_address_array[1], 10) + 1
+        octet_3 = 0
+        octet_4 = 0
+        return `${octet_1}.${octet_2}.${octet_3}.${octet_4}`
+    }
+    if (parseInt(network_address_array[0], 10) < 255) {
+        octet_1 = parseInt(network_address_array[0], 10) + 1
+        octet_2 = 0
+        octet_3 = 0
+        octet_4 = 0
+        return `${octet_1}.${octet_2}.${octet_3}.${octet_4}`
+    }
+}
+
 
 // calculate the broadcast address with OR "|" of base_ip OR reversed_network_mask (The last IP of the range)
 function calculate_broadcast_address(base_ip, network_mask, reversed_network_mask) {
