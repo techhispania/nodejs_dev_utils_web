@@ -10,15 +10,10 @@ function calculate_subnet_from_cicdr(cicdr) {
 
     // 2. calculate network mask from the sufix (For example: /24 means that first 24 bits are 1 and the rest are 0)
     const network_mask_obj = calculate_network_mask(sufix)
-    const binary_network_mask = network_mask_obj.binary_network_mask
-    const network_mask = network_mask_obj.network_mask
-    const binary_reversed_network_mask = network_mask_obj.binary_reversed_network_mask
-    const reversed_network_mask = network_mask_obj.reversed_network_mask
+    console.log(`Network Mask: ${JSON.stringify(network_mask_obj)}`)
 
-    console.log(`Binary network mask: ${binary_network_mask}`)
-    console.log(`Network mask: ${network_mask}`)
-    console.log(`Binary reversed network mask: ${binary_reversed_network_mask}`)
-    console.log(`Reversed network mask: ${reversed_network_mask}`)
+    const network_mask = network_mask_obj.network_mask
+    const reversed_network_mask = network_mask_obj.reversed_network_mask    
 
     // 3. calculate the network address with AND "&" of base_ip AND network_mask (The first IP of the range)
     const network_address = calculate_network_address(base_ip, network_mask)
@@ -29,50 +24,19 @@ function calculate_subnet_from_cicdr(cicdr) {
     console.log(`Broadcast Address: ${broadcast_address}`)
 
 
-    // 6. calculate the first IP of the range, adding +1 to the network address already calculated
+    // 5. calculate the first IP of the range, adding +1 to the network address already calculated
     const first_ip = calculate_first_ip(network_address)
     console.log(`First IP: ${first_ip}`)
 
-    // 7. calculate the last IP of the range, substracting -1 to the broadcast IP already calculated
-    let last_range_ip_first_octet = broadcast_address_first_octet
-    let last_range_ip_second_octet = broadcast_address_second_octet
-    let last_range_ip_third_octet = broadcast_address_third_octet
-    let last_range_ip_fourth_octet = broadcast_address_fourth_octet
-
-    if (broadcast_address_fourth_octet > 0) {
-        last_range_ip_fourth_octet = last_range_ip_fourth_octet - 1
-    } else {
-        if (broadcast_address_third_octet > 0) {
-            last_range_ip_third_octet = last_range_ip_third_octet - 1
-            last_range_ip_fourth_octet = 255
-        } else {
-            if (broadcast_address_second_octet > 0) {
-                last_range_ip_second_octet = last_range_ip_second_octet - 1
-                last_range_ip_third_octet = 255
-                last_range_ip_fourth_octet = 255
-            } else {
-                if (broadcast_address_first_octet > 0) {
-                    last_range_ip_first_octet = last_range_ip_first_octet - 1
-                    last_range_ip_second_octet = 255
-                    last_range_ip_third_octet = 255
-                    last_range_ip_fourth_octet = 255
-                }
-            }
-        }
-    }
-    const last_range_ip = `${last_range_ip_first_octet}.${last_range_ip_second_octet}.${last_range_ip_third_octet}.${last_range_ip_fourth_octet}`
-
-    console.log("======== FINAL RESULTS ========")
-    console.log(`Network address: ${network_address}`)
-    console.log(`Broadcast address: ${broadcast_address}`)
-    console.log(`First Range IP: ${first_ip}`)
-    console.log(`Last range IP: ${last_range_ip}`)
+    // 6. calculate the last IP of the range, substracting -1 to the broadcast IP already calculated
+    const last_ip = calculate_last_ip(broadcast_address)
+    console.log(`Last IP: ${last_ip}`)
 
     return {
         network_address: network_address,
         broadcast_address: broadcast_address,
-        first_range_ip: first_range_ip,
-        last_range_ip: last_range_ip
+        first_ip: first_ip,
+        last_ip: last_ip
     }
 }
 
@@ -102,6 +66,35 @@ function calculate_first_ip(network_address) {
         octet_2 = 0
         octet_3 = 0
         octet_4 = 0
+        return `${octet_1}.${octet_2}.${octet_3}.${octet_4}`
+    }
+}
+
+function calculate_last_ip(broadcast_ip) {
+    const broadcast_ip_array = broadcast_ip.split(".")
+
+    let octet_1 = broadcast_ip_array[0], octet_2 = broadcast_ip_array[1], octet_3 = broadcast_ip_array[2], octet_4 = broadcast_ip_array[3]
+
+    if (parseInt(broadcast_ip_array[3], 10) > 0) {
+        octet_4 = parseInt(broadcast_ip_array[3], 10) - 1
+        return `${octet_1}.${octet_2}.${octet_3}.${octet_4}`
+    }
+    if (parseInt(broadcast_ip_array[2], 10) > 0) {
+        octet_3 = parseInt(broadcast_ip_array[2], 10) - 1
+        octet_4 = 255
+        return `${octet_1}.${octet_2}.${octet_3}.${octet_4}`
+    }
+    if (parseInt(broadcast_ip_array[1], 10) > 0) {
+        octet_2 = parseInt(broadcast_ip_array[1], 10) - 1
+        octet_3 = 255
+        octet_4 = 255
+        return `${octet_1}.${octet_2}.${octet_3}.${octet_4}`
+    }
+    if (parseInt(broadcast_ip_array[0], 10) > 0) {
+        octet_1 = parseInt(broadcast_ip_array[0], 10) - 1
+        octet_2 = 255
+        octet_3 = 255
+        octet_4 = 255
         return `${octet_1}.${octet_2}.${octet_3}.${octet_4}`
     }
 }
@@ -183,9 +176,7 @@ function calculate_network_mask(sufix) {
     const binary_reversed_network_mask = reverse_binary_network_mask(binary_network_mask)
     const reversed_network_mask = convert_binary_ip_to_decimal(binary_reversed_network_mask)
 
-    return {binary_network_mask: binary_network_mask, 
-            network_mask: network_mask, 
-            binary_reversed_network_mask: binary_reversed_network_mask,
+    return {network_mask: network_mask, 
             reversed_network_mask: reversed_network_mask
         }
 }
