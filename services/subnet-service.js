@@ -25,11 +25,11 @@ function calculate_subnet_from_cicdr(cicdr) {
 
 
     // 5. calculate the first IP of the range, adding +1 to the network address already calculated
-    const first_ip = calculate_first_ip(network_address)
+    const first_ip = parseInt(sufix, 10) === 32 || parseInt(sufix, 10) === 31 ? network_address : calculate_first_ip(network_address)
     console.log(`First IP: ${first_ip}`)
 
     // 6. calculate the last IP of the range, substracting -1 to the broadcast IP already calculated
-    const last_ip = calculate_last_ip(broadcast_address)
+    const last_ip = parseInt(sufix, 10) === 32 || parseInt(sufix, 10) === 31 ? broadcast_address : calculate_last_ip(broadcast_address)
     console.log(`Last IP: ${last_ip}`)
 
     return {
