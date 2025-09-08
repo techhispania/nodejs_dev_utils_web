@@ -24,28 +24,9 @@ function calculate_subnet_from_cicdr(cicdr) {
     const network_address = calculate_network_address(base_ip, network_mask)
     console.log(`Network Address: ${network_address}`)
 
-    // 5. calculate the broadcast address with OR "|" of mask and base ip (The last IP of the range)
-    let broadcast_address_first_octet = base_ip_array[0]
-    let broadcast_address_second_octet = base_ip_array[1]
-    let broadcast_address_third_octet = base_ip_array[2]
-    let broadcast_address_fourth_octet = base_ip_array[3]
-    if (network_mask_first_octet != "255") {
-        broadcast_address_first_octet = parseInt(broadcast_address_first_octet, 10) | parseInt(reverse_first_octet, 2)
-    }
-
-    if (network_mask_second_octet != "255") {
-        broadcast_address_second_octet = parseInt(broadcast_address_second_octet, 10) | parseInt(reverse_second_octet, 2)
-    }
-
-    if (network_mask_third_octet != "255") {
-        broadcast_address_third_octet = parseInt(broadcast_address_third_octet, 10) | parseInt(reverse_third_octet, 2)
-    }
-
-    if (network_mask_fourth_octet != "255") {
-        broadcast_address_fourth_octet = parseInt(broadcast_address_fourth_octet, 10) | parseInt(reverse_fourth_octet, 2)
-    }
-    const broadcast_address = `${broadcast_address_first_octet}.${broadcast_address_second_octet}.${broadcast_address_third_octet}.${broadcast_address_fourth_octet}`
-    console.log(`Network address: ${network_address}`)
+    // 4. calculate the broadcast address with OR "|" of base_ip OR reversed_network_mask (The last IP of the range)
+    const broadcast_address = calculate_broadcast_address(base_ip, network_address, reversed_network_mask)
+    console.log(`Broadcast Address: ${broadcast_address}`)
 
 
     // 6. calculate the first IP of the range, adding +1 to the network address already calculated
@@ -118,6 +99,32 @@ function calculate_subnet_from_cicdr(cicdr) {
         first_range_ip: first_range_ip,
         last_range_ip: last_range_ip
     }
+}
+
+// calculate the broadcast address with OR "|" of base_ip OR reversed_network_mask (The last IP of the range)
+function calculate_broadcast_address(base_ip, network_mask, reversed_network_mask) {
+    const base_ip_array = base_ip.split(".")
+    const network_mask_array = network_mask.split(".")
+    const reversed_network_mask_array = reversed_network_mask.split(".")
+
+    let octet_1 = base_ip_array[0], octet_2 = base_ip_array[1], octet_3 = base_ip_array[2], octet_4 = base_ip_array[3]
+
+    if (network_mask_array[0] != "255") {
+        octet_1 = parseInt(octet_1, 10) | parseInt(reversed_network_mask_array[0], 10)
+    }
+
+    if (network_mask_array[1] != "255") {
+        octet_2 = parseInt(octet_2, 10) | parseInt(reversed_network_mask_array[1], 10)
+    }
+
+    if (network_mask_array[2] != "255") {
+        octet_3 = parseInt(octet_3, 10) | parseInt(reversed_network_mask_array[2], 10)
+    }
+
+    if (network_mask_array[3] != "255") {
+        octet_4 = parseInt(octet_4, 10) | parseInt(reversed_network_mask_array[3], 10)
+    }
+    return `${octet_1}.${octet_2}.${octet_3}.${octet_4}`
 }
 
 
