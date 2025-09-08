@@ -1,3 +1,6 @@
+const TOTAL_IP_BITS = 32
+const TOTAL_IP_BITS_WITH_DOTS = 35
+
 function calculate_subnet_from_cicdr(cicdr) {
     // 1. split the cicdr to get the base IP and the sufix
     const base_ip = cicdr.split("/")[0]
@@ -5,57 +8,19 @@ function calculate_subnet_from_cicdr(cicdr) {
 
     console.log(`base_ip: ${base_ip}, sufix: ${sufix}`)
 
-    // 2. convert base_ip to binary (it will be needed later to calculate network and broadcast addresses)
-    const base_ip_first_octet = parseInt(base_ip.substring(0, 8), 10).toString(2)
-    const base_ip_second_octet = parseInt(base_ip.substring(9, 17), 10).toString(2)
-    const base_ip_third_octet = parseInt(base_ip.substring(18, 26), 10).toString(2)
-    const base_ip_fourth_octet = parseInt(base_ip.substring(27, 35), 10).toString(2)
-    console.log(`Binary base ip: ${base_ip_first_octet}.${base_ip_second_octet}.${base_ip_third_octet}.${base_ip_fourth_octet}`)
-
-
-    // 3. calculate network mask from the sufix (/24 means that first 24 bits are 1 and the rest are 0)
-    let binary_network_mask = ""
-    const total_ip_bits = 32
-    // fill all the bits that are "1"
-    for (let i = sufix; i > 0; i--) {
-        binary_network_mask = `${binary_network_mask}1`
-    }
-    // fill all the bits that are "0"
-    for (let i = total_ip_bits - sufix; i > 0; i--) {
-        binary_network_mask = `${binary_network_mask}0`
-    }
-
-    const first_octet = binary_network_mask.substring(0, 8)
-    const second_octet = binary_network_mask.substring(8, 16)
-    const third_octet = binary_network_mask.substring(16, 24)
-    const fourth_octet = binary_network_mask.substring(24, 32)
-
-    binary_network_mask = `${first_octet}.${second_octet}.${third_octet}.${fourth_octet}`
-    network_mask = `${parseInt(first_octet, 2)}.${parseInt(second_octet, 2)}.${parseInt(third_octet, 2)}.${parseInt(fourth_octet, 2)}`
+    // 2. calculate network mask from the sufix (For example: /24 means that first 24 bits are 1 and the rest are 0)
+    const network_mask_obj = calculate_network_mask(sufix)
+    const binary_network_mask = network_mask_obj.binary_network_mask
+    const network_mask = network_mask_obj.network_mask
+    const binary_reversed_network_mask = network_mask_obj.binary_reversed_network_mask
+    const reversed_network_mask = network_mask_obj.reversed_network_mask
 
     console.log(`Binary network mask: ${binary_network_mask}`)
     console.log(`Network mask: ${network_mask}`)
+    console.log(`Binary reversed network mask: ${binary_reversed_network_mask}`)
+    console.log(`Reversed network mask: ${reversed_network_mask}`)
 
-    let binary_reverse_network_mask = ""
-    for (let i = 0; i < total_ip_bits + 3; i++) {
-        if (binary_network_mask[i] === "1") {
-            binary_reverse_network_mask = `${binary_reverse_network_mask}0`
-        } else if (binary_network_mask[i] === "0") {
-            binary_reverse_network_mask = `${binary_reverse_network_mask}1`
-        } else {
-            binary_reverse_network_mask = `${binary_reverse_network_mask}.`
-        }
-    }
-    console.log(`Reverse binary network mask: ${binary_reverse_network_mask}`)
-    const reverse_first_octet = binary_reverse_network_mask.substring(0, 8)
-    const reverse_second_octet = binary_reverse_network_mask.substring(9, 17)
-    const reverse_third_octet = binary_reverse_network_mask.substring(18, 26)
-    const reverse_fourth_octet = binary_reverse_network_mask.substring(27, 35)
-
-    const reverse_network_mask = `${parseInt(reverse_first_octet, 2)}.${parseInt(reverse_second_octet, 2)}.${parseInt(reverse_third_octet, 2)}.${parseInt(reverse_fourth_octet, 2)}`
-    console.log(`Reverse network mask: ${reverse_network_mask}`)
-
-    // 4. calculate the network address with AND "&" of mask and base ip (The first IP of the range)
+    // 3. calculate the network address with AND "&" of mask and base ip (The first IP of the range)
     const base_ip_array = base_ip.split(".")
     const network_mask_array = network_mask.split(".")
     
@@ -181,6 +146,62 @@ function calculate_subnet_from_cicdr(cicdr) {
         first_range_ip: first_range_ip,
         last_range_ip: last_range_ip
     }
+}
+
+function calculate_network_mask(sufix) {
+    let binary_network_mask = ""
+
+    // fill all the bits from the beginning with "1", until complete all the sufix
+    for (let i = sufix; i > 0; i--) {
+        binary_network_mask = `${binary_network_mask}1`
+    }
+
+    // fill the rest of bits with "0"
+    for (let i = TOTAL_IP_BITS - sufix; i > 0; i--) {
+        binary_network_mask = `${binary_network_mask}0`
+    }
+
+    const octet_1 = binary_network_mask.substring(0, 8)
+    const octet_2 = binary_network_mask.substring(8, 16)
+    const octet_3 = binary_network_mask.substring(16, 24)
+    const octet_4 = binary_network_mask.substring(24, 32)
+
+    binary_network_mask = `${octet_1}.${octet_2}.${octet_3}.${octet_4}`
+    const network_mask = `${parseInt(octet_1, 2)}.${parseInt(octet_2, 2)}.${parseInt(octet_3, 2)}.${parseInt(octet_4, 2)}`
+    const binary_reversed_network_mask = reverse_binary_network_mask(binary_network_mask)
+    const reversed_network_mask = convert_binary_ip_to_decimal(binary_reversed_network_mask)
+
+    return {binary_network_mask: binary_network_mask, 
+            network_mask: network_mask, 
+            binary_reversed_network_mask: binary_reversed_network_mask,
+            reversed_network_mask: reversed_network_mask
+        }
+}
+
+function convert_binary_ip_to_decimal(ip) {
+    const octet_1 = ip.substring(0, 8)
+    const octet_2 = ip.substring(9, 17)
+    const octet_3 = ip.substring(18, 26)
+    const octet_4 = ip.substring(27, 35)
+
+    const result = `${parseInt(octet_1, 2)}.${parseInt(octet_2, 2)}.${parseInt(octet_3, 2)}.${parseInt(octet_4, 2)}`
+    console.log(`Converted Binary: ${ip} to Decimal: ${result}`)
+    return result
+}
+
+function reverse_binary_network_mask(binary_network_mask) {
+    let binary_reverse_network_mask = ""
+
+    for (let i = 0; i < TOTAL_IP_BITS_WITH_DOTS; i++) {
+        if (binary_network_mask[i] === "1") {
+            binary_reverse_network_mask = `${binary_reverse_network_mask}0`
+        } else if (binary_network_mask[i] === "0") {
+            binary_reverse_network_mask = `${binary_reverse_network_mask}1`
+        } else {
+            binary_reverse_network_mask = `${binary_reverse_network_mask}.`
+        }
+    }
+    return binary_reverse_network_mask
 }
 
 module.exports = {calculate_subnet_from_cicdr}
