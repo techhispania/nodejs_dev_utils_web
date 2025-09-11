@@ -20,4 +20,10 @@ router.get("/ip-subnet-calculator", (req, res) => {
     })
 })
 
+router.get("/credentials-manager", (req, res) => {
+    res.render("credentials-manager", {
+        title: `${TITLE} - Credentials Manager`
+    })
+})
+
 module.exports = router
