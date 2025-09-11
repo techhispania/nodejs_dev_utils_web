@@ -1,3 +1,5 @@
+const logger = require("../application/logger")
+
 const TOTAL_IP_BITS = 32
 const TOTAL_IP_BITS_WITH_DOTS = 35
 
@@ -6,31 +8,31 @@ function calculate_subnet_from_cicdr(cicdr) {
     const base_ip = cicdr.split("/")[0]
     const sufix = cicdr.split("/")[1]
 
-    console.log(`base_ip: ${base_ip}, sufix: ${sufix}`)
+    logger.debug(`base_ip: ${base_ip}, sufix: ${sufix}`)
 
     // 2. calculate network mask from the sufix (For example: /24 means that first 24 bits are 1 and the rest are 0)
     const network_mask_obj = calculate_network_mask(sufix)
-    console.log(`Network Mask: ${JSON.stringify(network_mask_obj)}`)
+    logger.debug(`Network Mask: ${JSON.stringify(network_mask_obj)}`)
 
     const network_mask = network_mask_obj.network_mask
     const reversed_network_mask = network_mask_obj.reversed_network_mask    
 
     // 3. calculate the network address with AND "&" of base_ip AND network_mask (The first IP of the range)
     const network_address = calculate_network_address(base_ip, network_mask)
-    console.log(`Network Address: ${network_address}`)
+    logger.debug(`Network Address: ${network_address}`)
 
     // 4. calculate the broadcast address with OR "|" of base_ip OR reversed_network_mask (The last IP of the range)
     const broadcast_address = calculate_broadcast_address(base_ip, network_address, reversed_network_mask)
-    console.log(`Broadcast Address: ${broadcast_address}`)
+    logger.debug(`Broadcast Address: ${broadcast_address}`)
 
 
     // 5. calculate the first IP of the range, adding +1 to the network address already calculated
     const first_ip = parseInt(sufix, 10) === 32 || parseInt(sufix, 10) === 31 ? network_address : calculate_first_ip(network_address)
-    console.log(`First IP: ${first_ip}`)
+    logger.debug(`First IP: ${first_ip}`)
 
     // 6. calculate the last IP of the range, substracting -1 to the broadcast IP already calculated
     const last_ip = parseInt(sufix, 10) === 32 || parseInt(sufix, 10) === 31 ? broadcast_address : calculate_last_ip(broadcast_address)
-    console.log(`Last IP: ${last_ip}`)
+    logger.debug(`Last IP: ${last_ip}`)
 
     return {
         network_address: network_address,
@@ -188,7 +190,7 @@ function convert_binary_ip_to_decimal(ip) {
     const octet_4 = ip.substring(27, 35)
 
     const result = `${parseInt(octet_1, 2)}.${parseInt(octet_2, 2)}.${parseInt(octet_3, 2)}.${parseInt(octet_4, 2)}`
-    console.log(`Converted Binary: ${ip} to Decimal: ${result}`)
+    logger.debug(`Converted Binary: ${ip} to Decimal: ${result}`)
     return result
 }
 

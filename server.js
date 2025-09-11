@@ -6,6 +6,8 @@ const api_controller = require("./controllers/api-controller")
 
 const { TITLE, PORT } = require("./application/constants")
 
+const logger = require("./application/logger")
+
 const app = express()
 
 // configure templates engine "handlebars"
@@ -20,5 +22,5 @@ app.use(api_controller)
 app.use(web_controller)
 
 app.listen(PORT, () => {
-    console.log(`${TITLE} listening on port ${PORT}`)
+    logger.info(`${TITLE} listening on port ${PORT}`)
 })
