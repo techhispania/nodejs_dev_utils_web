@@ -12,4 +12,13 @@ router.post("/api/ip-subnet-calculator", (req, res) => {
     res.json(result)
 })
 
+
+router.post("/api/credentials", (req, res) => {
+    logger.info(`Credentials to be stored: ${JSON.stringify(req.body)}`)
+
+    // TODO call service to store the credentials
+
+    res.json({result: "OK"})
+})
+
 module.exports = router
