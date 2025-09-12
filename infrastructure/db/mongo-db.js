@@ -15,7 +15,7 @@ function connect() {
 function disconnect() {
     mongoose.disconnect()
     .then(() => logger.debug("MongoDB disconnected"))
-    .catch(() => logger.error("Error disconnecting from MongoDB:", err))
+    .catch(err => logger.error("Error disconnecting from MongoDB:", err))
 }
 
 module.exports = { connect, disconnect }

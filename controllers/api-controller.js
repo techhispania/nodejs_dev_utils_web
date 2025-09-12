@@ -1,5 +1,6 @@
 const router = require("express").Router()
 const subnet_service = require("../services/subnet-service")
+const credentials_service = require("../services/credentials-service")
 const logger = require("../application/logger")
 
 router.post("/api/ip-subnet-calculator", (req, res) => {
@@ -16,7 +17,7 @@ router.post("/api/ip-subnet-calculator", (req, res) => {
 router.post("/api/credentials", (req, res) => {
     logger.info(`Credentials to be stored: ${JSON.stringify(req.body)}`)
 
-    // TODO call service to store the credentials
+    credentials_service.store_credential(req.body.application_name, req.body.username, req.body.password)
 
     res.json({result: "OK"})
 })

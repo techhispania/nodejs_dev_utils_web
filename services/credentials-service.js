@@ -1,14 +1,21 @@
 const mongodb = require("../infrastructure/db/mongo-db")
+const credential_repository = require("../application/repositories/credential-repository")
 const logger = require("../application/logger")
 
-function store_credential(application_name, username, password) {
-    logger.debug("Storing credentials in database")
+async function store_credential(application_name, username, password) {
+    logger.debug(`Storing credentials in database. application_name: ${application_name}, username: ${username}, password: ${password}`)
 
-    mongodb.connect()
+    try {
+        await mongodb.connect()
 
-    mongodb.disconnect()
+        const new_credential = await credential_repository.insert_credential(application_name, username, password)
+        logger.debug(`New crendential inserted: ${new_credential}`)
+    } catch (err) {
+        logger.error(`Unexpected error storing credentials in database: ${err}`)
+    } finally {
+        await mongodb.disconnect()
+    }
 
-    logger.debug("Credential stored")
 }
 
-module.exports = store_credential
+module.exports = { store_credential }
