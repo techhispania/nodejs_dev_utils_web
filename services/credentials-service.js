@@ -16,7 +16,23 @@ async function store_credential(application_name, username, password) {
     } finally {
         await mongodb.disconnect()
     }
-
 }
 
-module.exports = { store_credential }
+async function get_all_credentials() {
+    logger.debug(`Getting all credentials stored in database`)
+
+    try {
+        await mongodb.connect()
+
+        const credentials = await credential_repository.find_all()
+
+        logger.debug(`Found '${credentials.length}' credentials`)
+        return credentials
+    } catch (err) {
+        logger.error(`Unexpected error getting all credentials from database: ${err}`)
+    } finally {
+        await mongodb.disconnect()
+    }
+}
+
+module.exports = { store_credential, get_all_credentials }
