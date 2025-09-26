@@ -18,6 +18,12 @@ async function store_credential(application_name, username, password) {
     }
 }
 
+/**
+ * This function return all the credentials stored in database
+ * But it only returns the _id and the application_name, not the 
+ * user or password.
+ * @returns credentials identifiers
+ */
 async function get_all_credentials() {
     logger.debug(`Getting all credentials stored in database`)
 
@@ -27,7 +33,12 @@ async function get_all_credentials() {
         const credentials = await credential_repository.find_all()
 
         logger.debug(`Found '${credentials.length}' credentials`)
-        return credentials
+
+        const result = credentials.map(credential => ({
+            _id: credential._id,
+            application_name: credential.application_name
+        }))
+        return result
     } catch (err) {
         logger.error(`Unexpected error getting all credentials from database: ${err}`)
     } finally {
