@@ -22,4 +22,14 @@ router.post("/api/credentials", (req, res) => {
     res.json({result: "OK"})
 })
 
+router.get("/api/credentials/:id", (req, res) => {
+    const id = req.params.id
+    logger.info(`Getting credentials for id ${id}`)
+
+    res.json({
+        username: "mock-user",
+        password: "mock-password"
+    })
+})
+
 module.exports = router
