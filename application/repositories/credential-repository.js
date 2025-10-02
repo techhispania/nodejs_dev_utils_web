@@ -1,4 +1,4 @@
-const Credential = require("../../domain/model/credential");
+const Credential = require("../../domain/model/credential")
 
 async function insert_credential(application_name, username, password) {
     try {
@@ -8,10 +8,10 @@ async function insert_credential(application_name, username, password) {
             password: password,
         });
 
-        const saved = await credential.save();
+        const saved = await credential.save()
         return saved;
     } catch (err) {
-        throw new Error("Insert failed: " + err.message);
+        throw new Error("Insert failed: " + err.message)
     }
 }
 
@@ -31,4 +31,12 @@ async function find_by_id(id) {
     }
 }
 
-module.exports = { insert_credential, find_all, find_by_id };
+async function delete_by_id(id) {
+    try {
+        await Credential.findByIdAndDelete(id)
+    } catch (err) {
+        throw new Error(`Delete by id failed: ${err.message}`)
+    }
+}
+
+module.exports = { insert_credential, find_all, find_by_id, delete_by_id };

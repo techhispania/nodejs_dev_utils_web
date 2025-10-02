@@ -63,4 +63,18 @@ async function get_credential(id) {
     }
 }
 
-module.exports = { store_credential, get_all_credentials, get_credential }
+async function delete_credential(id) {
+    logger.debug(`Deleting credential for id ${id}`)
+
+    try {
+        await mongodb.connect()
+
+        await credential_repository.delete_by_id(id)
+    } catch (err) {
+        logger.error(`Unexpected error deleting credential of id ${id}: ${err}`)
+    } finally {
+        await mongodb.disconnect()
+    }
+}
+
+module.exports = { store_credential, get_all_credentials, get_credential, delete_credential }
