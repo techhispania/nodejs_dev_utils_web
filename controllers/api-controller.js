@@ -30,6 +30,7 @@ router.get("/api/credentials/:id", async (req, res) => {
     logger.debug(`Credential retrieved: ${credential}`)
 
     res.json({
+        application: credential.application_name,
         username: credential.username,
         password: credential.password
     })
