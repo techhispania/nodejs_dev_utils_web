@@ -22,13 +22,16 @@ router.post("/api/credentials", (req, res) => {
     res.json({result: "OK"})
 })
 
-router.get("/api/credentials/:id", (req, res) => {
+router.get("/api/credentials/:id", async (req, res) => {
     const id = req.params.id
     logger.info(`Getting credentials for id ${id}`)
 
+    const credential = await credentials_service.get_credential(id)
+    logger.debug(`Credential retrieved: ${credential}`)
+
     res.json({
-        username: "mock-user",
-        password: "mock-password"
+        username: credential.username,
+        password: credential.password
     })
 })
 

@@ -17,11 +17,18 @@ async function insert_credential(application_name, username, password) {
 
 async function find_all() {
     try {
-        const credentials = await Credential.find().lean()
-        return credentials
+        return await Credential.find().lean()
     } catch (err) {
-        throw new Error("Find All failed: " + err.message)
+        throw new Error(`Find All failed: ${err.message}`)
     }
 }
 
-module.exports = { insert_credential, find_all };
+async function find_by_id(id) {
+    try {
+        return await Credential.findById(id).lean()
+    } catch (err) {
+        throw new Error(`Find by id failed: ${err.message}`)
+    }
+}
+
+module.exports = { insert_credential, find_all, find_by_id };

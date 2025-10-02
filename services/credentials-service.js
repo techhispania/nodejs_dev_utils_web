@@ -46,4 +46,21 @@ async function get_all_credentials() {
     }
 }
 
-module.exports = { store_credential, get_all_credentials }
+async function get_credential(id) {
+    logger.debug(`Getting credential for id ${id}`)
+
+    try {
+        await mongodb.connect()
+
+        const credential = await credential_repository.find_by_id(id)
+
+        credential.password = encryption.decrypt(credential.password)
+        return credential
+    } catch (err) {
+        logger.error(`Unexpected error getting credential of id ${id}: ${err}`)
+    } finally {
+        await mongodb.disconnect()
+    }
+}
+
+module.exports = { store_credential, get_all_credentials, get_credential }
