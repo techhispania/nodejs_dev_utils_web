@@ -45,4 +45,17 @@ router.delete("/api/credentials/:id", async (req, res) => {
     res.json({result: "OK"})
 })
 
+router.put("/api/credentials/:id", async (req, res) => {
+    const id = req.params.id
+    logger.info(`Editing credential for id ${id}`)
+    
+    const application = req.body.application_name
+    const username = req.body.username
+    const password = req.body.password
+    
+    credentials_service.edit_credential(id, application, username, password)
+
+    res.json({result: "OK"})
+})
+
 module.exports = router

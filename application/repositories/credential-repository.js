@@ -31,6 +31,23 @@ async function find_by_id(id) {
     }
 }
 
+async function update_credential(id, application_name, username, password) {
+    try {
+        const credential = {
+            application_name: application_name,
+            username: username,
+            password: password,
+        }
+
+        const updated = await Credential.findByIdAndUpdate(id, 
+                                                        { $set: credential }, 
+                                                        { new: true })
+        return updated;
+    } catch (err) {
+        throw new Error("Update failed: " + err.message)
+    }
+}
+
 async function delete_by_id(id) {
     try {
         await Credential.findByIdAndDelete(id)
@@ -39,4 +56,4 @@ async function delete_by_id(id) {
     }
 }
 
-module.exports = { insert_credential, find_all, find_by_id, delete_by_id };
+module.exports = { insert_credential, find_all, find_by_id, update_credential, delete_by_id };

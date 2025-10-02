@@ -63,6 +63,21 @@ async function get_credential(id) {
     }
 }
 
+async function edit_credential(id, application_name, username, password) {
+    logger.debug(`Storing credentials in database. id: ${id}, application_name: ${application_name}, username: ${username}, password: ******`)
+
+    try {
+        await mongodb.connect()
+
+        await credential_repository.update_credential(id, application_name, username, encryption.encrypt(password))
+        logger.debug(`Credential updated`)
+    } catch (err) {
+        logger.error(`Unexpected error updating credentials in database: ${err}`)
+    } finally {
+        await mongodb.disconnect()
+    }
+}
+
 async function delete_credential(id) {
     logger.debug(`Deleting credential for id ${id}`)
 
@@ -77,4 +92,4 @@ async function delete_credential(id) {
     }
 }
 
-module.exports = { store_credential, get_all_credentials, get_credential, delete_credential }
+module.exports = { store_credential, get_all_credentials, get_credential, delete_credential, edit_credential }
