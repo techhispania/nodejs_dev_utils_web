@@ -31,4 +31,11 @@ router.get("/credentials-manager", async (req, res) => {
     })
 })
 
+router.get("/issues-tracker", async (req, res) => {
+
+    res.render("issues-tracker", {
+        title: `${TITLE} - Issues Tracker`
+    })
+})
+
 module.exports = router
