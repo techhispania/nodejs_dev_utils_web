@@ -8,6 +8,10 @@ const { TITLE, PORT } = require("./application/constants")
 
 const logger = require("./application/logger")
 
+const dotenv = require("dotenv");
+
+dotenv.config(); // load .env into process.env
+
 const app = express()
 
 // configure templates engine "handlebars"
