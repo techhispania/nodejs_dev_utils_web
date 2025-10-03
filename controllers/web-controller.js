@@ -38,4 +38,11 @@ router.get("/issues-tracker", async (req, res) => {
     })
 })
 
+router.get("/issues-tracker/new", (req, res) => {
+    res.render("issues-tracker-new", {
+        title: `${TITLE} - Issues Tracker`,
+        subtitle: `New Issue`
+    })
+})
+
 module.exports = router

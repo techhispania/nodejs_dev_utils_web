@@ -1,6 +1,7 @@
 const router = require("express").Router()
 const subnet_service = require("../services/subnet-service")
 const credentials_service = require("../services/credentials-service")
+const issues_service = require("../services/issues-service")
 const logger = require("../application/logger")
 
 router.post("/api/ip-subnet-calculator", (req, res) => {
@@ -56,6 +57,15 @@ router.put("/api/credentials/:id", async (req, res) => {
     credentials_service.edit_credential(id, application, username, password)
 
     res.json({result: "OK"})
+})
+
+router.post("/api/issues-tracker", async (req, res) => {
+    const title = req.body.title_input
+    const description = req.body.description_input
+
+    await issues_service.store_issue(title, description)
+
+    res.redirect('/issues-tracker')
 })
 
 module.exports = router

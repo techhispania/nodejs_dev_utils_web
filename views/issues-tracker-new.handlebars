@@ -1,0 +1,17 @@
+<div class="container mt-4">
+    <h2>{{{subtitle}}}</h2>
+
+    <form id="issues-tracker-form" method="POST" action="/api/issues-tracker">
+        <div class="mb-3">
+            <label for="title-input" class="form-label">Title:</label>
+            <input class="form-control" id="title-input" name="title_input" type="text" placeholder='Enter issue title'>
+        </div>
+
+        <div class="mb-3">
+            <label for="description-input" class="form-label">Description:</label>
+            <textarea class="form-control" id="description-input" name="description_input" rows="10" placeholder='Enter the description of the issue'></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="save-btn">Save</button>
+    </form>
+</div>
