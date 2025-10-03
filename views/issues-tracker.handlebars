@@ -5,10 +5,10 @@
     </div>
 
     <div class="list-group">
-        {{#if tickets.length}}
-            {{#each tickets}}
-                <a href="/tickets/{{this._id}}" class="list-group-item list-group-item-action">
-                <strong>{{this.title}}</strong> - {{this.status}}
+        {{#if issues.length}}
+            {{#each issues}}
+                <a href="/issues-tracker/{{this._id}}" class="list-group-item list-group-item-action">
+                <strong>{{this.title}}</strong>
                 <small class="text-muted">Created at: {{this.createdAt}}</small>
                 </a>
             {{/each}}

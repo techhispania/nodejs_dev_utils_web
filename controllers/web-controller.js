@@ -1,5 +1,6 @@
 const router = require("express").Router()
 const credentials_service = require("../services/credentials-service")
+const issues_service = require("../services/issues-service")
 
 const { TITLE } = require("../application/constants")
 
@@ -33,8 +34,11 @@ router.get("/credentials-manager", async (req, res) => {
 
 router.get("/issues-tracker", async (req, res) => {
 
+    const issues = await issues_service.get_all_issues()
+
     res.render("issues-tracker", {
-        title: `${TITLE} - Issues Tracker`
+        title: `${TITLE} - Issues Tracker`,
+        issues: issues
     })
 })
 

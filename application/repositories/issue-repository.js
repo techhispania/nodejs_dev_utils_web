@@ -1,6 +1,6 @@
 const Issue = require("../../domain/model/issue")
 
-async function insert_issue(title, description) {
+async function insert(title, description) {
     try {
         const issue = new Issue({
             title: title,
@@ -14,4 +14,12 @@ async function insert_issue(title, description) {
     }
 }
 
-module.exports = { insert_issue };
+async function find_all() {
+    try {
+        return await Issue.find().sort({ createdAt: 1 }).lean()
+    } catch (err) {
+        throw new Error(`Find All failed: ${err.message}`)
+    }
+}
+
+module.exports = { insert, find_all };
