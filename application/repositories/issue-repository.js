@@ -1,10 +1,11 @@
 const Issue = require("../../domain/model/issue")
 
-async function insert(title, description) {
+async function insert(title, description, status) {
     try {
         const issue = new Issue({
             title: title,
-            description: description
+            description: description,
+            status: status
         });
 
         const saved = await issue.save()

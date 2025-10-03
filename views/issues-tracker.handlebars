@@ -4,16 +4,53 @@
         <a href="/issues-tracker/new" class="btn btn-primary"><i class="bi bi-plus-circle"></i> New Ticket</a>
     </div>
 
-    <div class="list-group">
-        {{#if issues.length}}
-            {{#each issues}}
-                <a href="/issues-tracker/{{this._id}}" class="list-group-item list-group-item-action">
-                <strong>{{this.title}}</strong>
-                <small class="text-muted">Created at: {{this.createdAt}}</small>
-                </a>
-            {{/each}}
-        {{else}}
-            <p class="text-muted">No tickets available.</p>
-        {{/if}}
-    </div>
+    {{#if issues.length}}
+        <table id="issuesTable"
+            data-toggle="table"
+            data-search="true"
+            data-pagination="true"
+            data-page-size="20"
+            data-page-list="[20, 30, 40, 50, 60]"
+            data-sort-name="createdAt"
+            data-sort-order="asc"
+            class="table table-striped">
+            <thead>
+                <tr>
+                    <th data-field="title" data-sortable="true">Title</th>
+                    <th data-field="status" data-sortable="true">Status</th>
+                    <th data-field="createdAt" data-sortable="true" data-formatter="dateFormatter">Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each issues}}
+                <tr>
+                    <td><a href="/issues-tracker/{{this._id}}"><strong>{{this.title}}</strong></a></td>
+                    <td>{{this.status}}</td>
+                    <td>{{this.createdAt}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else}}
+        <div class="list-group"></div>
+            <p class="text-muted">No issues available.</p>
+        </div>
+    {{/if}}
 </div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.22.3/dist/bootstrap-table.min.js"></script>
+
+<!-- Initialize the table --> 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var table = document.getElementById("issuesTable");
+        if (table) {
+            $(table).bootstrapTable();
+        }
+    });
+
+    function dateFormatter(value) {
+        return new Date(value).toLocaleString();
+    }
+</script>
