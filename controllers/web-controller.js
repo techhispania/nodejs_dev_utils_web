@@ -1,6 +1,7 @@
 const router = require("express").Router()
 const credentials_service = require("../services/credentials-service")
 const issues_service = require("../services/issues-service")
+const constants = require("../application/constants")
 
 const { TITLE } = require("../application/constants")
 
@@ -45,7 +46,8 @@ router.get("/issues-tracker", async (req, res) => {
 router.get("/issues-tracker/new", (req, res) => {
     res.render("issues-tracker-new", {
         title: `${TITLE} - Issues Tracker`,
-        subtitle: `New Issue`
+        subtitle: `New Issue`,
+        projects: constants.ISSUE_PROJECTS
     })
 })
 

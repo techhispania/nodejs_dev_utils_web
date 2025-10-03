@@ -62,8 +62,10 @@ router.put("/api/credentials/:id", async (req, res) => {
 router.post("/api/issues-tracker", async (req, res) => {
     const title = req.body.title_input
     const description = req.body.description_input
+    const requested_by = req.body.requested_by_input
+    const project = req.body.project_input
 
-    await issues_service.store_issue(title, description)
+    await issues_service.store_issue(title, description, requested_by, project)
 
     res.redirect('/issues-tracker')
 })

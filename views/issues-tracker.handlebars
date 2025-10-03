@@ -17,6 +17,8 @@
             <thead>
                 <tr>
                     <th data-field="title" data-sortable="true">Title</th>
+                    <th data-field="requested_by" data-sortable="true">Requested By</th>
+                    <th data-field="project" data-sortable="true">Project</th>
                     <th data-field="status" data-sortable="true">Status</th>
                     <th data-field="createdAt" data-sortable="true" data-formatter="dateFormatter">Created At</th>
                 </tr>
@@ -25,6 +27,8 @@
                 {{#each issues}}
                 <tr>
                     <td><a href="/issues-tracker/{{this._id}}"><strong>{{this.title}}</strong></a></td>
+                    <td>{{this.requested_by}}</td>
+                    <td>{{this.project}}</td>
                     <td>{{this.status}}</td>
                     <td>{{this.createdAt}}</td>
                 </tr>

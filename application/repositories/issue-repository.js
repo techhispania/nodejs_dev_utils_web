@@ -1,10 +1,12 @@
 const Issue = require("../../domain/model/issue")
 
-async function insert(title, description, status) {
+async function insert(title, description, requested_by, project, status) {
     try {
         const issue = new Issue({
             title: title,
             description: description,
+            requested_by: requested_by,
+            project: project,
             status: status
         });
 

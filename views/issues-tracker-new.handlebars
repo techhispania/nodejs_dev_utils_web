@@ -4,12 +4,27 @@
     <form id="issues-tracker-form" method="POST" action="/api/issues-tracker">
         <div class="mb-3">
             <label for="title-input" class="form-label">Title:</label>
-            <input class="form-control" id="title-input" name="title_input" type="text" placeholder='Enter issue title'>
+            <input class="form-control" id="title-input" name="title_input" type="text" placeholder='Enter issue title' required>
+        </div>
+
+        <div class="mb-3">
+            <label for="project-select" class="form-label">Project:</label>
+            <select class="form-select" id="project-select" name="project_input" required>
+                <option value="" disabled selected>Select a project</option>
+                {{#each projects}}
+                    <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="requested-by-input" class="form-label">Requested By:</label>
+            <input class="form-control" id="requested-by-input" name="requested_by_input" type="text" placeholder='Enter who requested this issue' required>
         </div>
 
         <div class="mb-3">
             <label for="description-input" class="form-label">Description:</label>
-            <textarea class="form-control" id="description-input" name="description_input" rows="10" placeholder='Enter the description of the issue'></textarea>
+            <textarea class="form-control" id="description-input" name="description_input" rows="10" placeholder='Enter the description of the issue' required></textarea>
         </div>
 
         <button type="submit" class="btn btn-primary" id="save-btn">Save</button>

@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const issueSchema = new mongoose.Schema({
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true },
+    requested_by: { type: String, required: true },
+    project: { type: String, required: true },
     status: { type: String, required: true }
 }, { timestamps: true });
 
