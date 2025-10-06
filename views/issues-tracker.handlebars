@@ -21,6 +21,7 @@
                     <th data-field="project" data-sortable="true">Project</th>
                     <th data-field="status" data-sortable="true">Status</th>
                     <th data-field="createdAt" data-sortable="true" data-formatter="dateFormatter">Created At</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -31,6 +32,14 @@
                     <td>{{this.project}}</td>
                     <td>{{this.status}}</td>
                     <td>{{this.createdAt}}</td>
+                    <td>
+                        <button data-id="{{this._id}}" class="btn btn-primary btn-edit-issue">
+                            <i class="bi bi-pencil"></i> Edit
+                        </button>
+                        <button data-id="{{this._id}}" class="btn btn-primary btn-delete-issue">
+                            <i class="bi bi-trash"></i> Remove
+                        </button>
+                    </td>
                 </tr>
                 {{/each}}
             </tbody>

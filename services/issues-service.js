@@ -45,5 +45,30 @@ async function get_all_issues() {
     }
 }
 
+async function get_issue(issue_id) {
+    logger.debug(`Getting issue with id ${issue_id}`)
 
-module.exports = { store_issue, get_all_issues }
+    try {
+        await mongodb.connect()
+
+        const issue = await issue_repository.find_by_id(issue_id)
+
+        const result = {
+            _id: issue._id,
+            title: issue.title,
+            description: issue.description,
+            requested_by: issue.requested_by,
+            project: issue.project, 
+            status: issue.status,
+            created_at: issue.createdAt
+        }
+        return result
+    } catch (err) {
+        logger.error(`Unexpected error getting issue from database: ${err}`)
+    } finally {
+        await mongodb.disconnect()
+    }
+}
+
+
+module.exports = { store_issue, get_all_issues, get_issue }

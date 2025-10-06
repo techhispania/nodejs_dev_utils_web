@@ -1,0 +1,81 @@
+<div class="container mt-4">
+  
+    <div class="container py-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Issue Details</h4>
+            </div>
+
+            <div class="card-body">
+        
+            <!-- Title -->
+            <div class="mb-3">
+            <label class="form-label fw-bold">Title</label>
+            <div class="border rounded p-2 bg-light" id="issueTitle">
+                {{issue.title}}
+            </div>
+            </div>
+
+            <!-- Status -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Status</label>
+                <div class="d-flex align-items-center">
+                    <select class="form-select w-auto" id="statusSelect">
+                        <option value="Open">Open</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+                    <span id="statusMessage" class="ms-3 text-success" style="display:none;">Updated</span>
+                </div>
+            </div>
+
+            <!-- Requested By, Project, Created At -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Requested By</label>
+                    <div class="border rounded p-2 bg-light" id="issueRequestedBy">{{issue.requested_by}}</div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Project</label>
+                    <div class="border rounded p-2 bg-light" id="issueProject">{{issue.project}}</div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Created At</label>
+                    <div class="border rounded p-2 bg-light" id="issueCreatedAt">{{issue.created_at}}</div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Description</label>
+                <div class="border rounded p-2 bg-light" id="issueDescription" style="white-space: pre-wrap;">{{issue.description}}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const createdAtElement = document.getElementById('issueCreatedAt');
+    const isoDate = createdAtElement.textContent.trim();
+
+    if (isoDate) {
+        const date = new Date(isoDate);
+
+        // helper function
+        function pad(n) {
+            return n < 10 ? '0' + n : n;
+        }
+
+        const formatted = 
+            date.getFullYear() + '-' +
+            pad(date.getMonth() + 1) + '-' +
+            pad(date.getDate()) + ' ' +
+            pad(date.getHours()) + ':' +
+            pad(date.getMinutes()) + ':' +
+            pad(date.getSeconds());
+
+        createdAtElement.textContent = formatted;
+    }
+
+</script>

@@ -25,4 +25,12 @@ async function find_all() {
     }
 }
 
-module.exports = { insert, find_all };
+async function find_by_id(id) {
+    try {
+        return await Issue.findById(id).lean()
+    } catch (err) {
+        throw new Error(`Find by id failed: ${err.message}`)
+    }
+}
+
+module.exports = { insert, find_all, find_by_id };
