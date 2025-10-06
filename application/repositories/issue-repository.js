@@ -33,4 +33,15 @@ async function find_by_id(id) {
     }
 }
 
-module.exports = { insert, find_all, find_by_id };
+async function update(id, obj) {
+    try {
+        const updated = await Issue.findByIdAndUpdate(id, 
+                                                    { $set: obj }, 
+                                                    { new: true })
+        return updated;
+    } catch (err) {
+        throw new Error("Update failed: " + err.message)
+    }
+}
+
+module.exports = { insert, find_all, find_by_id, update };

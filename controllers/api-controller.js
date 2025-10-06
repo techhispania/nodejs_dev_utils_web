@@ -70,4 +70,16 @@ router.post("/api/issues-tracker", async (req, res) => {
     res.redirect('/issues-tracker')
 })
 
+
+router.put("/api/issues-tracker/:id/status", async (req, res) => {
+    const id = req.params.id
+    logger.info(`Editing status for id ${id}`)
+    
+    const status = req.body.status
+    
+    issues_service.edit_issue_status(id, status)
+
+    res.json({result: "OK"})
+})
+
 module.exports = router

@@ -70,5 +70,22 @@ async function get_issue(issue_id) {
     }
 }
 
+async function edit_issue_status(id, status) {
+    logger.debug(`Editing status for issue id: ${id}`)
 
-module.exports = { store_issue, get_all_issues, get_issue }
+    try {
+        await mongodb.connect()
+
+        const obj = {
+            status: status
+        }
+        await issue_repository.update(id, obj)
+        logger.debug(`Issue updated`)
+    } catch (err) {
+        logger.error(`Unexpected error updating issue in database: ${err}`)
+    } finally {
+        await mongodb.disconnect()
+    }
+}
+
+module.exports = { store_issue, get_all_issues, get_issue, edit_issue_status }
