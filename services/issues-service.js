@@ -9,7 +9,7 @@ async function store_issue(title, description, requested_by, project) {
     try {
         await mongodb.connect()
 
-        const new_issue = await issue_repository.insert(title, description, requested_by, project, constants.ISSUE_STATUS_TO_DO)
+        const new_issue = await issue_repository.insert(title, description, requested_by, project, constants.ISSUE_STATUS_PENDING)
         logger.debug(`New issue inserted: ${new_issue}`)
     } catch (err) {
         logger.error(`Unexpected error storing issue in database: ${err}`)

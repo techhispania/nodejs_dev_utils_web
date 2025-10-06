@@ -61,7 +61,8 @@ router.get("/issues-tracker/:id", async (req, res) => {
     res.render("issues-tracker-show", {
         title: `${TITLE} - Issues Tracker`,
         subtitle: `Issue`,
-        issue: issue
+        issue: issue,
+        status_list: constants.ISSUE_STATUS_LIST
     })
 })
 

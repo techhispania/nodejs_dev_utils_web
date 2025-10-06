@@ -1,37 +1,35 @@
 <div class="container mt-4">
   
     <div class="container py-5">
-        <div class="card shadow-sm">
+        <div class="card shadow-sm p-3">
             <div class="card-header bg-primary text-white">
                 <h4 class="mb-0">Issue Details</h4>
             </div>
-
-            <div class="card-body">
         
             <!-- Title -->
-            <div class="mb-3">
-            <label class="form-label fw-bold">Title</label>
-            <div class="border rounded p-2 bg-light" id="issueTitle">
-                {{issue.title}}
-            </div>
+            <div class="mb-4 mt-3">
+                <label class="form-label fw-bold">Title</label>
+                <div class="border rounded p-2 bg-light" id="issueTitle">{{issue.title}}</div>
             </div>
 
             <!-- Status -->
-            <div class="mb-3">
+            <div class="mb-4">
                 <label class="form-label fw-bold">Status</label>
                 <div class="d-flex align-items-center">
                     <select class="form-select w-auto" id="statusSelect">
-                        <option value="Open">Open</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Resolved">Resolved</option>
-                        <option value="Closed">Closed</option>
+                        {{#each status_list}}
+                            {{#ifEquals ../issue.status this}}
+                                <option value="{{this}}" selected>{{this}}</option>
+                            {{else}}
+                                <option value="{{this}}">{{this}}</option>
+                            {{/ifEquals}}
+                        {{/each}}
                     </select>
-                    <span id="statusMessage" class="ms-3 text-success" style="display:none;">Updated</span>
                 </div>
             </div>
 
             <!-- Requested By, Project, Created At -->
-            <div class="row mb-3">
+            <div class="row mb-4">
                 <div class="col-md-4">
                     <label class="form-label fw-bold">Requested By</label>
                     <div class="border rounded p-2 bg-light" id="issueRequestedBy">{{issue.requested_by}}</div>
@@ -47,7 +45,7 @@
             </div>
 
             <!-- Description -->
-            <div class="mb-3">
+            <div class="mb-4">
                 <label class="form-label fw-bold">Description</label>
                 <div class="border rounded p-2 bg-light" id="issueDescription" style="white-space: pre-wrap;">{{{issue.description}}}</div>
             </div>
