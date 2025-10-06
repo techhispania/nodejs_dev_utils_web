@@ -23,10 +23,74 @@
         </div>
 
         <div class="mb-3">
-            <label for="description-input" class="form-label">Description:</label>
+            <label for="description-input" class="form-label">Description:</label><br>
+            <button type="button" class="btn btn-primary me-1 mb-2" id="bold-btn">Bold</button>
+            <button type="button" class="btn btn-primary me-1 mb-2" id="italic-btn">Italic</button>
+            <button type="button" class="btn btn-primary me-1 mb-2" id="tab-btn">Tab</button>
+            <br>
             <textarea class="form-control" id="description-input" name="description_input" rows="10" placeholder='Enter the description of the issue' required></textarea>
         </div>
 
         <button type="submit" class="btn btn-primary" id="save-btn">Save</button>
     </form>
 </div>
+
+<script>
+    const bold_btn = document.getElementById("bold-btn")
+    const italic_btn = document.getElementById("italic-btn")
+    const tab_btn = document.getElementById("tab-btn")
+    const description = document.getElementById("description-input")
+
+    function insertTag(tag) {
+        const start = description.selectionStart;
+        const end = description.selectionEnd;
+        const text = description.value;
+
+        const before = text.substring(0, start);
+        const selected = text.substring(start, end);
+        const after = text.substring(end);
+
+        // Wrap selected text with tag, or insert empty tags if nothing selected
+        const newText = before + `<${tag}>` + selected + `</${tag}>` + after;
+        description.value = newText;
+
+        // Set cursor inside the tags if nothing selected
+        if (start === end) {
+            description.selectionStart = description.selectionEnd = start + tag.length + 2;
+        } else {
+            description.selectionStart = start;
+            description.selectionEnd = end + tag.length*2 + 5; // length of <tag></tag>
+        }
+
+        description.focus();
+    }
+
+    function addTab() {
+        const start = description.selectionStart;
+        const end = description.selectionEnd;
+        const text = description.value;
+
+        // Insert 4 spaces at the cursor or replace selection
+        const before = text.substring(0, start);
+        const after = text.substring(end);
+
+        description.value = before + "    " + after;
+
+        // Move cursor after the inserted spaces
+        description.selectionStart = description.selectionEnd = start + 4;
+        description.focus();
+    }
+
+    bold_btn.addEventListener("click", () => {
+        insertTag("b")
+    })
+
+    italic_btn.addEventListener("click", () => {
+        insertTag("i")
+    })
+
+    tab_btn.addEventListener("click", () => {
+        addTab()
+    })
+
+</script>
