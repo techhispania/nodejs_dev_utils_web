@@ -44,4 +44,12 @@ async function update(id, obj) {
     }
 }
 
-module.exports = { insert, find_all, find_by_id, update };
+async function delete_by_id(id) {
+    try {
+        await Issue.findByIdAndDelete(id)
+    } catch (err) {
+        throw new Error(`Delete by id failed: ${err.message}`)
+    }
+}
+
+module.exports = { insert, find_all, find_by_id, update, delete_by_id };

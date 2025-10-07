@@ -82,4 +82,13 @@ router.put("/api/issues-tracker/:id/status", async (req, res) => {
     res.json({result: "OK"})
 })
 
+router.delete("/api/issues-tracker/:id", async (req, res) => {
+    const id = req.params.id
+    logger.info(`Deleting issue for id ${id}`)
+
+    issues_service.delete_issue(id)
+
+    res.json({result: "OK"})
+})
+
 module.exports = router

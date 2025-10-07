@@ -88,4 +88,19 @@ async function edit_issue_status(id, status) {
     }
 }
 
-module.exports = { store_issue, get_all_issues, get_issue, edit_issue_status }
+async function delete_issue(id) {
+    logger.debug(`Deleting issue for id ${id}`)
+
+    try {
+        await mongodb.connect()
+
+        await issue_repository.delete_by_id(id)
+    } catch (err) {
+        logger.error(`Unexpected error deleting issue of id ${id}: ${err}`)
+    } finally {
+        await mongodb.disconnect()
+    }
+}
+
+
+module.exports = { store_issue, get_all_issues, get_issue, edit_issue_status, delete_issue }
