@@ -2,7 +2,7 @@
     <a href="/issues-tracker" class="mb-3 mt-3 btn btn-primary" id="back-btn"><i class="bi bi-arrow-left"></i> Back</a>
 
     <h2>{{{subtitle}}}</h2>
-    
+
     <form id="issues-tracker-form" method="POST" action="/api/issues-tracker/edit">
         <input type="hidden" value="{{issue._id}}" name="issue_id">
         <div class="mb-3">
@@ -29,10 +29,10 @@
             <label for="project-select" class="form-label">Project:</label>
             <select class="form-select" id="project-select" name="project_input" required>
                 {{#each projects}}
-                    {{#ifEquals ../issue.project this}}
-                        <option value="{{this}}" selected>{{this}}</option>
+                    {{#ifEquals ../issue.project this.name}}
+                        <option value="{{this.name}}" selected>{{this.name}}</option>
                     {{else}}
-                            <option value="{{this}}">{{this}}</option>
+                            <option value="{{this.name}}">{{this.name}}</option>
                     {{/ifEquals}}
                 {{/each}}
             </select>

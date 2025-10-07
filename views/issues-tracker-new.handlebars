@@ -12,7 +12,7 @@
             <select class="form-select" id="project-select" name="project_input" required>
                 <option value="" disabled selected>Select a project</option>
                 {{#each projects}}
-                    <option value="{{this}}">{{this}}</option>
+                    <option value="{{this.name}}">{{this.name}}</option>
                 {{/each}}
             </select>
         </div>

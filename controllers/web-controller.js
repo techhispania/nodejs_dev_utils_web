@@ -44,11 +44,11 @@ router.get("/issues-tracker", async (req, res) => {
     })
 })
 
-router.get("/issues-tracker/new", (req, res) => {
+router.get("/issues-tracker/new", async (req, res) => {
     res.render("issues-tracker-new", {
         title: `${TITLE} - Issues Tracker`,
         subtitle: `New Issue`,
-        projects: constants.ISSUE_PROJECTS
+        projects: await projects_service.get_all_projects()
     })
 })
 
@@ -77,7 +77,7 @@ router.get("/issues-tracker/edit/:id", async (req, res) => {
         subtitle: `Edit Issue`,
         issue: issue,
         status_list: constants.ISSUE_STATUS_LIST,
-        projects: constants.ISSUE_PROJECTS
+        projects: await projects_service.get_all_projects()
     })
 })
 
