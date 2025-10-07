@@ -2,6 +2,7 @@ const router = require("express").Router()
 const subnet_service = require("../services/subnet-service")
 const credentials_service = require("../services/credentials-service")
 const issues_service = require("../services/issues-service")
+const projects_service = require("../services/projects-service")
 const logger = require("../application/logger")
 
 router.post("/api/ip-subnet-calculator", (req, res) => {
@@ -107,6 +108,23 @@ router.delete("/api/issues-tracker/:id", async (req, res) => {
     logger.info(`Deleting issue for id ${id}`)
 
     issues_service.delete_issue(id)
+
+    res.json({result: "OK"})
+})
+
+router.post("/api/issues-tracker/project", async (req, res) => {
+    const project = req.body.project_input
+
+    await projects_service.store_project(project)
+
+    res.redirect('/issues-tracker/project/new')
+})
+
+router.delete("/api/issues-tracker/project/:id", async (req, res) => {
+    const id = req.params.id
+    logger.info(`Deleting project for id ${id}`)
+
+    projects_service.delete_project(id)
 
     res.json({result: "OK"})
 })

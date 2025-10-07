@@ -1,0 +1,106 @@
+<div class="container mt-4">
+    <h2>{{{subtitle}}}</h2>
+
+    <form id="issues-tracker-form" method="POST" action="/api/issues-tracker/project">
+        <div class="mb-3">
+            <label for="title-input" class="form-label">Project Name:</label>
+            <input class="form-control" id="title-input" name="project_input" type="text" placeholder='Enter project name' required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="save-btn">Save</button>
+    </form>
+</div>
+
+<div class="container mt-4">
+    <h2>All Projects</h2>
+
+    {{#if projects.length}}
+        <table id="projectsTable"
+            data-toggle="table"
+            data-search="true"
+            data-pagination="true"
+            data-page-size="20"
+            data-page-list="[20, 30, 40, 50, 60]"
+            data-sort-name="name"
+            data-sort-order="asc"
+            class="table table-striped">
+            <thead>
+                <tr>
+                    <th data-field="name" data-sortable="true">Project</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each projects}}
+                <tr>
+                    <td><a href="/issues-tracker/project/{{this._id}}">{{this.name}}</a></td>
+                    <td>
+                        <button data-id="{{this._id}}" class="btn btn-primary btn-delete-project">
+                            <i class="bi bi-trash"></i> Remove
+                        </button>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else}}
+        <div class="list-group"></div>
+            <p class="text-muted">No projects available.</p>
+        </div>
+    {{/if}}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.22.3/dist/bootstrap-table.min.js"></script>
+
+<script>
+    // Initialize the table
+    document.addEventListener("DOMContentLoaded", function () {
+        // Initialize the table
+        const table = document.getElementById("projectsTable");
+        if (table) {
+            $(table).bootstrapTable();
+        }
+
+        // Event delegation for delete buttons
+        const tableBody = document.querySelector("#projectsTable tbody")
+        tableBody?.addEventListener("click", async (e) => {
+            const delete_btn = e.target.closest(".btn-delete-project")
+            if (!delete_btn) return // Ignore clicks outside buttons
+
+            const id = delete_btn.dataset.id;
+            if (confirm(`Are you sure you want to delete the project?`)) {
+                try {
+                    await delete_project(id);
+                    // Remove the row from the table without reloading the page
+                    const row = delete_btn.closest("tr")
+                    row?.remove()
+                } catch (error) {
+                    console.error(error);
+                    alert("There was a problem removing the project")
+                }
+            }
+        });
+    });
+
+    async function delete_project(id) {
+        try {
+            const response = await fetch(`/api/issues-tracker/project/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Accept": "application/json"
+                }
+            })
+            console.log("Request done")
+            if (!response.ok) {
+                throw new Error(`Error deleting the project for id ${id}. Response: ${JSON.stringify(response)}`)
+            }
+
+            const data = await response.json()
+
+        } catch (error) {
+            console.error(`Error removing project: ${error}`)
+            alert("There was a problem removing project")
+        }
+    }
+</script>
