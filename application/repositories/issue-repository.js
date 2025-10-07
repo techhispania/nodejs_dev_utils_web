@@ -19,7 +19,7 @@ async function insert(title, description, requested_by, project, status) {
 
 async function find_all() {
     try {
-        return await Issue.find().sort({ createdAt: 1 }).lean()
+        return await Issue.find().sort({ createdAt: -1 }).lean()
     } catch (err) {
         throw new Error(`Find All failed: ${err.message}`)
     }
