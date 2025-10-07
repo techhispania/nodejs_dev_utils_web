@@ -16,10 +16,10 @@ router.post("/api/ip-subnet-calculator", (req, res) => {
 })
 
 
-router.post("/api/credentials", (req, res) => {
+router.post("/api/credentials", async (req, res) => {
     logger.info(`Credentials to be stored: ${JSON.stringify(req.body)}`)
 
-    credentials_service.store_credential(req.body.application_name, req.body.username, req.body.password)
+    await credentials_service.store_credential(req.body.application_name, req.body.username, req.body.password)
 
     res.json({result: "OK"})
 })
