@@ -1,0 +1,106 @@
+<div class="container mt-4">
+  
+    <a href="/issues-tracker" class="ms-3 mt-3 mb-3 btn btn-primary" id="back-btn"><i class="bi bi-arrow-left"></i> Back</a>
+
+    <div class="container py-3">
+        <div class="card shadow-sm p-3">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Issue Details</h4>
+            </div>
+        
+            <!-- Title -->
+            <div class="mb-4 mt-3">
+                <label class="form-label fw-bold">Title</label>
+                <div class="border rounded p-2 bg-light" id="issueTitle">{{issue.title}}</div>
+            </div>
+
+            <!-- Status -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">Status</label>
+                <div class="d-flex align-items-center">
+                    <select class="form-select w-auto" id="statusSelect">
+                        {{#each status_list}}
+                            {{#ifEquals ../issue.status this}}
+                                <option value="{{this}}" selected>{{this}}</option>
+                            {{else}}
+                                <option value="{{this}}">{{this}}</option>
+                            {{/ifEquals}}
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Requested By, Project, Created At -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Requested By</label>
+                    <div class="border rounded p-2 bg-light" id="issueRequestedBy">{{issue.requested_by}}</div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Project</label>
+                    <div class="border rounded p-2 bg-light" id="issueProject">{{issue.project}}</div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Created At</label>
+                    <div class="border rounded p-2 bg-light" id="issueCreatedAt">{{issue.created_at}}</div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">Description</label>
+                <div class="border rounded p-2 bg-light" id="issueDescription" style="white-space: pre-wrap;">{{{issue.description}}}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const createdAtElement = document.getElementById('issueCreatedAt');
+    const isoDate = createdAtElement.textContent.trim();
+    const statusSelect = document.getElementById('statusSelect');
+    const issue_id = "{{issue._id}}";
+
+    if (isoDate) {
+        const date = new Date(isoDate);
+
+        // helper function
+        function pad(n) {
+            return n < 10 ? '0' + n : n;
+        }
+
+        const formatted = 
+            date.getFullYear() + '-' +
+            pad(date.getMonth() + 1) + '-' +
+            pad(date.getDate()) + ' ' +
+            pad(date.getHours()) + ':' +
+            pad(date.getMinutes()) + ':' +
+            pad(date.getSeconds());
+
+        createdAtElement.textContent = formatted;
+    }
+
+    statusSelect.addEventListener('change', async () => {
+        const newStatus = statusSelect.value;
+        console.log(`Updating status of issue: ${issue_id}`)
+
+        try {
+            const response = await fetch(`/api/issues-tracker/${issue_id}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+        });
+
+        if (response.ok) {
+            console.log('Status updated successfully');
+        } else {
+            console.error('Failed to update status');
+            alert('Failed to update status');
+        }
+        } catch (err) {
+            console.error(err);
+            alert('Error updating status');
+        }
+    });
+
+</script>

@@ -1,0 +1,127 @@
+
+<div class="container mt-5">
+    <div class="container mb-4 d-flex justify-content-between">
+        <a href="/" class="btn btn-primary" id="back-btn"><i class="bi bi-arrow-left"></i> Back</a>
+        <div>
+            <a href="/issues-tracker/new" class="btn btn-primary"><i class="bi bi-plus-circle"></i> New Ticket</a>
+            <a href="/issues-tracker/project/new" class="btn btn-primary"><i class="bi bi-plus-circle"></i> New Project</a>
+        </div>
+    </div>
+
+    {{#if issues.length}}
+        <table id="issuesTable"
+            data-toggle="table"
+            data-search="true"
+            data-pagination="true"
+            data-page-size="20"
+            data-page-list="[20, 30, 40, 50, 60]"
+            class="table table-striped">
+            <thead>
+                <tr>
+                    <th data-field="title" data-sortable="true">Title</th>
+                    <th data-field="requested_by" data-sortable="true">Requested By</th>
+                    <th data-field="project" data-sortable="true">Project</th>
+                    <th data-field="status" data-sortable="true">Status</th>
+                    <th data-field="createdAt" data-sortable="true" data-formatter="dateFormatter">Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each issues}}
+                <tr>
+                    <td><a href="/issues-tracker/{{this._id}}"><strong>{{this.title}}</strong></a></td>
+                    <td>{{this.requested_by}}</td>
+                    <td>{{this.project}}</td>
+                    <td>{{this.status}}</td>
+                    <td>{{this.createdAt}}</td>
+                    <td>
+                        <a href="/issues-tracker/edit/{{this._id}}" class="btn btn-primary btn-edit-issue">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <button data-id="{{this._id}}" class="btn btn-primary btn-delete-issue">
+                            <i class="bi bi-trash"></i> Remove
+                        </button>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else}}
+        <div class="list-group"></div>
+            <p class="text-muted">No issues available.</p>
+        </div>
+    {{/if}}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.22.3/dist/bootstrap-table.min.js"></script>
+
+<script>
+    // Initialize the table
+    document.addEventListener("DOMContentLoaded", function () {
+        // Initialize the table
+        const table = document.getElementById("issuesTable");
+        if (table) {
+            $(table).bootstrapTable();
+        }
+
+        // Event delegation for delete buttons
+        const tableBody = document.querySelector("#issuesTable tbody")
+        tableBody?.addEventListener("click", async (e) => {
+            const delete_btn = e.target.closest(".btn-delete-issue")
+            if (!delete_btn) return // Ignore clicks outside buttons
+
+            const id = delete_btn.dataset.id;
+            if (confirm(`Are you sure you want to delete the issue?`)) {
+                try {
+                    await delete_issue(id);
+                    // Remove the row from the table without reloading the page
+                    const row = delete_btn.closest("tr")
+                    row?.remove()
+                } catch (error) {
+                    console.error(error);
+                    alert("There was a problem removing the issue")
+                }
+            }
+        });
+    });
+
+    function dateFormatter(value) {
+        const date = new Date(value);
+
+        // helper function
+        function pad(n) {
+            return n < 10 ? '0' + n : n;
+        }
+
+        const formatted = date.getFullYear() + '-' +
+                            pad(date.getMonth() + 1) + '-' +
+                            pad(date.getDate()) + ' ' +
+                            pad(date.getHours()) + ':' +
+                            pad(date.getMinutes()) + ':' +
+                            pad(date.getSeconds());
+
+        return formatted
+    }
+
+    async function delete_issue(id) {
+        try {
+            const response = await fetch(`/api/issues-tracker/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Accept": "application/json"
+                }
+            })
+            console.log("Request done")
+            if (!response.ok) {
+                throw new Error(`Error deleting the issue for id ${id}. Response: ${JSON.stringify(response)}`)
+            }
+
+            const data = await response.json()
+
+        } catch (error) {
+            console.error(`Error removing issue: ${error}`)
+            alert("There was a problem removing issue")
+        }
+    }
+</script>

@@ -1,0 +1,117 @@
+<div class="container mt-4">
+    <a href="/issues-tracker" class="mb-3 mt-3 btn btn-primary" id="back-btn"><i class="bi bi-arrow-left"></i> Back</a>
+
+    <h2>{{{subtitle}}}</h2>
+
+    <form id="issues-tracker-form" method="POST" action="/api/issues-tracker/edit">
+        <input type="hidden" value="{{issue._id}}" name="issue_id">
+        <div class="mb-3">
+            <label for="title-input" class="form-label">Title:</label>
+            <input class="form-control" id="title-input" name="title_input" type="text" placeholder='Enter issue title' value="{{issue.title}}" required>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-bold">Status</label>
+            <div class="d-flex align-items-center">
+                <select class="form-select w-auto" id="statusSelect" name="status_input">
+                    {{#each status_list}}
+                        {{#ifEquals ../issue.status this}}
+                            <option value="{{this}}" selected>{{this}}</option>
+                        {{else}}
+                            <option value="{{this}}">{{this}}</option>
+                        {{/ifEquals}}
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="project-select" class="form-label">Project:</label>
+            <select class="form-select" id="project-select" name="project_input" required>
+                {{#each projects}}
+                    {{#ifEquals ../issue.project this.name}}
+                        <option value="{{this.name}}" selected>{{this.name}}</option>
+                    {{else}}
+                            <option value="{{this.name}}">{{this.name}}</option>
+                    {{/ifEquals}}
+                {{/each}}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="requested-by-input" class="form-label">Requested By:</label>
+            <input class="form-control" id="requested-by-input" name="requested_by_input" type="text" placeholder='Enter who requested this issue' value="{{issue.requested_by}}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="description-input" class="form-label">Description:</label><br>
+            <button type="button" class="btn btn-primary me-1 mb-2" id="bold-btn">Bold</button>
+            <button type="button" class="btn btn-primary me-1 mb-2" id="italic-btn">Italic</button>
+            <button type="button" class="btn btn-primary me-1 mb-2" id="tab-btn">Tab</button>
+            <br>
+            <textarea class="form-control" id="description-input" name="description_input" rows="10" placeholder='Enter the description of the issue' required>{{issue.description}}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="edit-btn">Edit</button>
+    </form>
+</div>
+
+<script>
+    const bold_btn = document.getElementById("bold-btn")
+    const italic_btn = document.getElementById("italic-btn")
+    const tab_btn = document.getElementById("tab-btn")
+    const description = document.getElementById("description-input")
+
+    function insertTag(tag) {
+        const start = description.selectionStart;
+        const end = description.selectionEnd;
+        const text = description.value;
+
+        const before = text.substring(0, start);
+        const selected = text.substring(start, end);
+        const after = text.substring(end);
+
+        // Wrap selected text with tag, or insert empty tags if nothing selected
+        const newText = before + `<${tag}>` + selected + `</${tag}>` + after;
+        description.value = newText;
+
+        // Set cursor inside the tags if nothing selected
+        if (start === end) {
+            description.selectionStart = description.selectionEnd = start + tag.length + 2;
+        } else {
+            description.selectionStart = start;
+            description.selectionEnd = end + tag.length*2 + 5; // length of <tag></tag>
+        }
+
+        description.focus();
+    }
+
+    function addTab() {
+        const start = description.selectionStart;
+        const end = description.selectionEnd;
+        const text = description.value;
+
+        // Insert 4 spaces at the cursor or replace selection
+        const before = text.substring(0, start);
+        const after = text.substring(end);
+
+        description.value = before + "    " + after;
+
+        // Move cursor after the inserted spaces
+        description.selectionStart = description.selectionEnd = start + 4;
+        description.focus();
+    }
+
+    bold_btn.addEventListener("click", () => {
+        insertTag("b")
+    })
+
+    italic_btn.addEventListener("click", () => {
+        insertTag("i")
+    })
+
+    tab_btn.addEventListener("click", () => {
+        addTab()
+    })
+
+</script>

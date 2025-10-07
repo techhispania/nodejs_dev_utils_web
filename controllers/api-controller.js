@@ -1,6 +1,8 @@
 const router = require("express").Router()
 const subnet_service = require("../services/subnet-service")
 const credentials_service = require("../services/credentials-service")
+const issues_service = require("../services/issues-service")
+const projects_service = require("../services/projects-service")
 const logger = require("../application/logger")
 
 router.post("/api/ip-subnet-calculator", (req, res) => {
@@ -54,6 +56,75 @@ router.put("/api/credentials/:id", async (req, res) => {
     const password = req.body.password
     
     credentials_service.edit_credential(id, application, username, password)
+
+    res.json({result: "OK"})
+})
+
+router.post("/api/issues-tracker", async (req, res) => {
+    const title = req.body.title_input
+    const description = req.body.description_input
+    const requested_by = req.body.requested_by_input
+    const project = req.body.project_input
+
+    await issues_service.store_issue(title, description, requested_by, project)
+
+    res.redirect('/issues-tracker')
+})
+
+router.post("/api/issues-tracker/edit", async (req, res) => {
+    const id = req.body.issue_id
+    const title = req.body.title_input
+    const description = req.body.description_input
+    const requested_by = req.body.requested_by_input
+    const status = req.body.status_input
+    const project = req.body.project_input
+
+    const obj = {
+        title: title, 
+        description: description, 
+        requested_by: requested_by, 
+        status: status, 
+        project: project
+    }
+
+    await issues_service.edit_issue(id, obj)
+
+    res.redirect('/issues-tracker')
+})
+
+router.put("/api/issues-tracker/:id/status", async (req, res) => {
+    const id = req.params.id
+    logger.info(`Editing status for id ${id}`)
+    
+    const status = req.body.status
+    
+    issues_service.edit_issue_status(id, status)
+
+    res.json({result: "OK"})
+})
+
+router.delete("/api/issues-tracker/:id", async (req, res) => {
+    const id = req.params.id
+    logger.info(`Deleting issue for id ${id}`)
+
+    issues_service.delete_issue(id)
+
+    res.json({result: "OK"})
+})
+
+router.post("/api/issues-tracker/project", async (req, res) => {
+    const project = req.body.project_input
+
+    await projects_service.store_project(project)
+
+    res.redirect('/issues-tracker/project/new')
+})
+
+router.delete("/api/issues-tracker/project/:id", async (req, res) => {
+    const id = req.params.id
+    logger.info(`Deleting project for id ${id}`)
+
+    projects_service.delete_project(id)
 
     res.json({result: "OK"})
 })
