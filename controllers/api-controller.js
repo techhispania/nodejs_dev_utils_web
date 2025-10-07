@@ -42,7 +42,7 @@ router.delete("/api/credentials/:id", async (req, res) => {
     const id = req.params.id
     logger.info(`Deleting credential for id ${id}`)
 
-    credentials_service.delete_credential(id)
+    await credentials_service.delete_credential(id)
 
     res.json({result: "OK"})
 })
