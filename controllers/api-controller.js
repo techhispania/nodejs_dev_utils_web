@@ -70,6 +70,26 @@ router.post("/api/issues-tracker", async (req, res) => {
     res.redirect('/issues-tracker')
 })
 
+router.post("/api/issues-tracker/edit", async (req, res) => {
+    const id = req.body.issue_id
+    const title = req.body.title_input
+    const description = req.body.description_input
+    const requested_by = req.body.requested_by_input
+    const status = req.body.status_input
+    const project = req.body.project_input
+
+    const obj = {
+        title: title, 
+        description: description, 
+        requested_by: requested_by, 
+        status: status, 
+        project: project
+    }
+
+    await issues_service.edit_issue(id, obj)
+
+    res.redirect('/issues-tracker')
+})
 
 router.put("/api/issues-tracker/:id/status", async (req, res) => {
     const id = req.params.id

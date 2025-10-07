@@ -66,4 +66,18 @@ router.get("/issues-tracker/:id", async (req, res) => {
     })
 })
 
+router.get("/issues-tracker/edit/:id", async (req, res) => {
+    const issue_id = req.params.id
+
+    const issue = await issues_service.get_issue(issue_id)
+
+    res.render("issues-tracker-edit", {
+        title: `${TITLE} - Issues Tracker`,
+        subtitle: `Edit Issue`,
+        issue: issue,
+        status_list: constants.ISSUE_STATUS_LIST,
+        projects: constants.ISSUE_PROJECTS
+    })
+})
+
 module.exports = router
