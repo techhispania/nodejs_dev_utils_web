@@ -89,7 +89,7 @@ router.post("/api/issues-tracker/edit", async (req, res) => {
 
     await issues_service.edit_issue(id, obj)
 
-    res.redirect('/issues-tracker')
+    res.redirect(`/issues-tracker/${id}`)
 })
 
 router.put("/api/issues-tracker/:id/status", async (req, res) => {
