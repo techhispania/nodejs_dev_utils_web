@@ -17,3 +17,15 @@ mongosh -u root -p --authenticationDatabase admin
 - **Switch to the app db:** use dev-utils
 - **Show all collections:** show collections
 - **Query "credentials" collection:** db.credentials.find().pretty()
+
+### Create DB Backup:
+**Create the backup inside the container:**
+
+docker exec mongodb mongodump \
+  --username root \
+  --password <DB_PASSWORD> \
+  --authenticationDatabase admin \
+  --db dev-utils \
+  --out /backup
+
+**Copy the backup out of the container:** docker cp mongodb:/backup ./mongo-backup
