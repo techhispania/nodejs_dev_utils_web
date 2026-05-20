@@ -17,7 +17,7 @@ services:
       context: .
     container_name: dev-utils
     ports:
-      - "3000:3000"
+      - "3123:3000"
     networks:
       - dev-utils
 
